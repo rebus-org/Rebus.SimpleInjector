@@ -1,4 +1,4 @@
-# Rebus.TODO
+# Rebus.SimpleInjector
 
 Provides a SimpleInjector-based container adapter for [Rebus](https://github.com/rebus-org/Rebus).
 
