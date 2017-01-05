@@ -19,11 +19,11 @@ namespace Rebus.SimpleInjector.Tests
             factory.RegisterHandlerType<SomeHandler>();
             factory.RegisterHandlerType<AnotherHandler>();
 
-            using (var context = new DefaultTransactionContext())
+            using (var context = new DefaultTransactionContextScope())
             {
                 const string stringMessage = "bimse";
                 
-                var handlers = factory.GetActivator().GetHandlers(stringMessage, context).Result.ToList();
+                var handlers = factory.GetActivator().GetHandlers(stringMessage, AmbientTransactionContext.Current).Result.ToList();
                 
                 Assert.That(handlers.Count, Is.EqualTo(2));
             }

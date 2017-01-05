@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Rebus.Activation;
 using Rebus.Bus;
+using Rebus.Bus.Advanced;
 using Rebus.Extensions;
 using Rebus.Handlers;
 using Rebus.Messages;
@@ -27,6 +28,8 @@ namespace Rebus.SimpleInjector
         /// </summary>
         public SimpleInjectorContainerAdapter(Container container)
         {
+            if (container == null) throw new ArgumentNullException(nameof(container));
+
             _container = container;
 
             if (container.Options.ResolveUnregisteredCollections) return;
@@ -67,6 +70,16 @@ namespace Rebus.SimpleInjector
 
             _container.Register(() =>
             {
+                if (_container.IsVerifying)
+                {
+                    return new FakeSyncBus();
+                }
+
+                return bus.Advanced.SyncBus;
+            });
+
+            _container.Register(() =>
+            {
                 var currentMessageContext = MessageContext.Current;
 
                 if (currentMessageContext != null)
@@ -81,6 +94,54 @@ namespace Rebus.SimpleInjector
 
                 throw new InvalidOperationException("Attempted to inject the current message context from MessageContext.Current, but it was null! Did you attempt to resolve IMessageContext from outside of a Rebus message handler?");
             });
+        }
+
+        class FakeSyncBus : ISyncBus
+        {
+            public void SendLocal(object commandMessage, Dictionary<string, string> optionalHeaders = null)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Send(object commandMessage, Dictionary<string, string> optionalHeaders = null)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Reply(object replyMessage, Dictionary<string, string> optionalHeaders = null)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Defer(TimeSpan delay, object message, Dictionary<string, string> optionalHeaders = null)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Subscribe<TEvent>()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Subscribe(Type eventType)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Unsubscribe<TEvent>()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Unsubscribe(Type eventType)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Publish(object eventMessage, Dictionary<string, string> optionalHeaders = null)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         /// <summary>
