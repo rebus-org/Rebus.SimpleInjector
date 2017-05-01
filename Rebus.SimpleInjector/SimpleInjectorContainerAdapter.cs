@@ -11,6 +11,7 @@ using Rebus.Messages;
 using Rebus.Pipeline;
 using Rebus.Transport;
 using SimpleInjector;
+
 #pragma warning disable 1998
 
 namespace Rebus.SimpleInjector
@@ -20,21 +21,15 @@ namespace Rebus.SimpleInjector
     /// </summary>
     public class SimpleInjectorContainerAdapter : IContainerAdapter, IDisposable
     {
-        readonly HashSet<IDisposable> _disposables = new HashSet<IDisposable>();
         readonly Container _container;
+        IBus _bus;
 
         /// <summary>
         /// Constructs the container adapter
         /// </summary>
         public SimpleInjectorContainerAdapter(Container container)
         {
-            if (container == null) throw new ArgumentNullException(nameof(container));
-
-            _container = container;
-
-            if (container.Options.ResolveUnregisteredCollections) return;
-
-            container.Options.ResolveUnregisteredCollections = true;
+            _container = container ?? throw new ArgumentNullException(nameof(container));
         }
 
         /// <summary>
@@ -42,21 +37,32 @@ namespace Rebus.SimpleInjector
         /// </summary>
         public async Task<IEnumerable<IHandleMessages<TMessage>>> GetHandlers<TMessage>(TMessage message, ITransactionContext transactionContext)
         {
-            var handlerInstances = _container
-                .GetAllInstances<IHandleMessages<TMessage>>()
-                .ToList();
-
-            transactionContext.OnDisposed(() =>
+            if (TryGetInstance<IEnumerable<IHandleMessages<TMessage>>>(_container, out var handlerInstances))
             {
-                handlerInstances
-                    .OfType<IDisposable>()
-                    .ForEach(disposable =>
-                    {
-                        disposable.Dispose();
-                    });
-            });
+                var handlerList = handlerInstances.ToList();
 
-            return handlerInstances;
+                transactionContext.OnDisposed(() =>
+                {
+                    handlerList
+                        .OfType<IDisposable>()
+                        .ForEach(disposable =>
+                        {
+                            disposable.Dispose();
+                        });
+                });
+
+                return handlerList;
+            }
+
+            return new IHandleMessages<TMessage>[0];
+        }
+
+        static bool TryGetInstance<TService>(Container container, out TService instance)
+            where TService : class
+        {
+            IServiceProvider provider = container;
+            instance = (TService)provider.GetService(typeof(TService));
+            return instance != null;
         }
 
         /// <summary>
@@ -65,8 +71,7 @@ namespace Rebus.SimpleInjector
         public void SetBus(IBus bus)
         {
             _container.RegisterSingleton(bus);
-
-            _disposables.Add(bus);
+            _bus = bus;
 
             _container.Register(() =>
             {
@@ -161,8 +166,7 @@ namespace Rebus.SimpleInjector
         /// </summary>
         public void Dispose()
         {
-            _disposables.ForEach(d => d.Dispose());
-            _disposables.Clear();
+            _bus?.Dispose();
         }
     }
 }
