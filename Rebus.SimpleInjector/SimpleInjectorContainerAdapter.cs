@@ -11,6 +11,7 @@ using Rebus.Messages;
 using Rebus.Pipeline;
 using Rebus.Transport;
 using SimpleInjector;
+// ReSharper disable ArgumentsStyleLiteral
 
 #pragma warning disable 1998
 
@@ -70,6 +71,11 @@ namespace Rebus.SimpleInjector
         /// </summary>
         public void SetBus(IBus bus)
         {
+            if (_container.GetRegistration(typeof(IBus), throwOnFailure: false) != null)
+            {
+                throw new InvalidOperationException($"Cannot register IBus in the container because it has already been registered. If you want to host multiple Rebus instances in a single process, please use separate container instances for them.");
+            }
+
             _container.RegisterSingleton(bus);
             _bus = bus;
 
