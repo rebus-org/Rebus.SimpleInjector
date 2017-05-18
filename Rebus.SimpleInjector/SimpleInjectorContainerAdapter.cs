@@ -71,7 +71,7 @@ namespace Rebus.SimpleInjector
         /// </summary>
         public void SetBus(IBus bus)
         {
-            if (_container.GetRegistration(typeof(IBus), throwOnFailure: false) != null)
+            if (_container.GetCurrentRegistrations().Any(r => r.ServiceType == typeof(IBus)))
             {
                 throw new InvalidOperationException($"Cannot register IBus in the container because it has already been registered. If you want to host multiple Rebus instances in a single process, please use separate container instances for them.");
             }
