@@ -20,10 +20,9 @@ namespace Rebus.SimpleInjector
     /// <summary>
     /// Implementation of <see cref="IContainerAdapter"/> that uses Simple Injector to do its thing
     /// </summary>
-    public class SimpleInjectorContainerAdapter : IContainerAdapter, IDisposable
+    public class SimpleInjectorContainerAdapter : IContainerAdapter
     {
         readonly Container _container;
-        IBus _bus;
 
         /// <summary>
         /// Constructs the container adapter
@@ -76,9 +75,8 @@ namespace Rebus.SimpleInjector
                 throw new InvalidOperationException($"Cannot register IBus in the container because it has already been registered. If you want to host multiple Rebus instances in a single process, please use separate container instances for them.");
             }
 
-            _container.RegisterSingleton(bus);
-            _bus = bus;
-
+            _container.RegisterSingleton(() => bus);
+            
             _container.Register(() =>
             {
                 if (_container.IsVerifying)
@@ -105,6 +103,11 @@ namespace Rebus.SimpleInjector
 
                 throw new InvalidOperationException("Attempted to inject the current message context from MessageContext.Current, but it was null! Did you attempt to resolve IMessageContext from outside of a Rebus message handler?");
             });
+
+            // cheat and activate the IBus singleton behind the scenes, thus ensuring that the container will dispose it when it is time
+            var registration = _container.GetRegistration(typeof(IBus));
+
+            registration.GetInstance();
         }
 
         class FakeSyncBus : ISyncBus
@@ -167,12 +170,12 @@ namespace Rebus.SimpleInjector
             public Dictionary<string, string> Headers { get; }
         }
 
-        /// <summary>
-        /// Disposes the bus
-        /// </summary>
-        public void Dispose()
-        {
-            _bus?.Dispose();
-        }
+        ///// <summary>
+        ///// Disposes the bus
+        ///// </summary>
+        //public void Dispose()
+        //{
+        //    _bus?.Dispose();
+        //}
     }
 }

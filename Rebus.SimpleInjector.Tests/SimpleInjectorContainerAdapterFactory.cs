@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Rebus.Activation;
 using Rebus.Bus;
 using Rebus.Extensions;
@@ -41,7 +40,7 @@ namespace Rebus.SimpleInjector.Tests
 
             var containerAdapter = new SimpleInjectorContainerAdapter(_container);
 
-            _disposables.Add(containerAdapter);
+            _disposables.Add(_container);
 
             return containerAdapter;
         }
@@ -65,7 +64,8 @@ namespace Rebus.SimpleInjector.Tests
         static IEnumerable<Type> GetHandlerInterfaces(Type handlerType)
         {
 #if NETSTANDARD1_6
-            return handlerType.GetTypeInfo().GetInterfaces().Where(i => i.GetTypeInfo().IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandleMessages<>));
+            return System.Reflection.IntrospectionExtensions.GetTypeInfo(handlerType)
+                .GetInterfaces().Where(i => System.Reflection.IntrospectionExtensions.GetTypeInfo(i).IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandleMessages<>));
 #else
             return handlerType.GetInterfaces().Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandleMessages<>));
 #endif
