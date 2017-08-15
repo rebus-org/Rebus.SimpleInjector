@@ -41,6 +41,11 @@ namespace Rebus.SimpleInjector.Tests
                 throw new NotImplementedException();
             }
 
+            public Task DeferLocal(TimeSpan delay, object message, Dictionary<string, string> optionalHeaders = null)
+            {
+                throw new NotImplementedException();
+            }
+
             public Task Reply(object replyMessage, Dictionary<string, string> optionalHeaders = null)
             {
                 throw new NotImplementedException();
@@ -52,6 +57,7 @@ namespace Rebus.SimpleInjector.Tests
             }
 
             public IAdvancedApi Advanced { get; }
+
             public Task Subscribe<TEvent>()
             {
                 throw new NotImplementedException();

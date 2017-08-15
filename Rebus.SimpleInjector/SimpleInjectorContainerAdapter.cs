@@ -132,6 +132,11 @@ namespace Rebus.SimpleInjector
                 throw new NotImplementedException();
             }
 
+            public void DeferLocal(TimeSpan delay, object message, Dictionary<string, string> optionalHeaders = null)
+            {
+                throw new NotImplementedException();
+            }
+
             public void Subscribe<TEvent>()
             {
                 throw new NotImplementedException();
