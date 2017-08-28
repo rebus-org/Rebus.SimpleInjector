@@ -32,14 +32,20 @@ namespace Rebus.SimpleInjector.Tests
             configureHandlers(registry);
 
             var simpleInjContainer = new Container();
+
             registry.ApplyRegistrations(simpleInjContainer);
 
             container = new ActivatedContainer(simpleInjContainer);
 
-            return configureBus(Configure.With(new SimpleInjectorContainerAdapter(simpleInjContainer))).Start();
+            //return configureBus(Configure.With(new SimpleInjectorContainerAdapter(simpleInjContainer))).Start();
+            simpleInjContainer.ConfigureRebus(configurer => configureBus(configurer).Start());
+
+            simpleInjContainer.StartBus();
+
+            return simpleInjContainer.GetInstance<IBus>();
         }
 
-        private class HandlerRegistry : IHandlerRegistry
+        class HandlerRegistry : IHandlerRegistry
         {
             public HashSet<Type> HandlerTypesToRegister { get; } = new HashSet<Type>();
 
@@ -82,9 +88,9 @@ namespace Rebus.SimpleInjector.Tests
             }
         }
 
-        private class ActivatedContainer : IActivatedContainer
+        class ActivatedContainer : IActivatedContainer
         {
-            private readonly Container _container;
+            readonly Container _container;
 
             public ActivatedContainer(Container container)
             {

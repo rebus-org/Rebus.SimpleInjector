@@ -23,4 +23,8 @@
 * Circumvent SimpleInjector's reluctance to dispose singletons that have not been resolved
 * Update contracts dep - thanks [trevorreeves]
 
+## 5.0.0-b01
+
+* Change configuration API to work better with SimpleInjector - 
+
 [trevorreeves]: https://github.com/trevorreeves
