@@ -37,6 +37,9 @@ The examples shown so far will make the necessary container registrations, but t
 1. The container resolves the `IBus` instance, or
 1. You call the `container.StartBus()` extension method
 
+so you should probably always remember to call `container.StartBus()` when your application starts (after it has
+finished making ALL of its container registrations).
+
 ### So why is it different from all the other container adapters?
 
 Beacuse SimpleInjector is very opinionated about its registration API and Rebus is pretty loose about it :)
