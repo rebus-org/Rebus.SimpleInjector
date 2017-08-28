@@ -2,8 +2,6 @@
 using System.Reflection;
 using System.Threading;
 using NUnit.Framework;
-using Rebus.Bus;
-using Rebus.Config;
 using Rebus.Tests.Contracts;
 using Rebus.Transport.InMem;
 using SimpleInjector;
@@ -38,12 +36,11 @@ namespace Rebus.SimpleInjector.Tests
         {
             Console.WriteLine("Calling RebusPackage");
 
-            container.ConfigureRebus(configurer =>
-            {
-                return configurer
+            container.ConfigureRebus(
+                configurer => configurer
                     .Transport(t => t.UseInMemoryTransport(new InMemNetwork(), "test"))
-                    .Start();
-            });
+                    .Start()
+            );
 
         }
     }
