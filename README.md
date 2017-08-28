@@ -24,11 +24,11 @@ A slightly more realistic example (using Serilog, RabbitMQ and SQL Server) could
 
 ```csharp
 container.ConfigureRebus(
-    configurer => configurer
-        .Logging(l => l.Serilog())
+	configurer => configurer
+		.Logging(l => l.Serilog())
 		.Transport(t => t.UseRabbitMq("amqp://rebususer:blablasecret@BIGRABBIT01.local", "simpleinjectortest"))
 		.Sagas(s => s.StoreInSqlServer("server=SQLMOTEL01.local; database=RebusStuff; trusted_connection=true"))
-        .Start()
+		.Start()
 );
 ```
 
