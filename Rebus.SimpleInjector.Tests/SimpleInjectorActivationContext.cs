@@ -82,6 +82,8 @@ namespace Rebus.SimpleInjector.Tests
 #if NETSTANDARD1_6
             return System.Reflection.IntrospectionExtensions.GetTypeInfo(handlerType)
                 .GetInterfaces().Where(i => System.Reflection.IntrospectionExtensions.GetTypeInfo(i).IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandleMessages<>));
+#elif NETSTANDARD2_0
+                return handlerType.GetInterfaces().Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandleMessages<>));
 #else
                 return handlerType.GetInterfaces().Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandleMessages<>));
 #endif
