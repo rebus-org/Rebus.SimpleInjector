@@ -43,3 +43,12 @@ finished making ALL of its container registrations).
 ### So why is it different from all the other container adapters?
 
 Beacuse SimpleInjector is very opinionated about its registration API and Rebus is pretty loose about it :)
+
+### How to register handlers?
+
+Since Rebus' container adapters resolve ALL handlers that can handle an incoming message, handlers must be registered with the
+registration API for collections, e.g. like
+
+```csharp
+container.RegisterCollection<IHandleMessages<SomeMessage>>(new []{ typeof(SomeMessageHandler) });
+```
