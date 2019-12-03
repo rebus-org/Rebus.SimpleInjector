@@ -23,7 +23,7 @@
 * Circumvent SimpleInjector's reluctance to dispose singletons that have not been resolved
 * Update contracts dep - thanks [trevorreeves]
 
-## 5.0.0-b02
+## 5.0.0
 
 * Change configuration API to work better with SimpleInjector
 * Target .NET Core 2.0 too
