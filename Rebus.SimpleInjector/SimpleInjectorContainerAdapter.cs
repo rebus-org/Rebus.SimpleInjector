@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Rebus.Activation;
 using Rebus.Bus;
-using Rebus.Extensions;
 using Rebus.Handlers;
 using Rebus.Transport;
 using SimpleInjector;
@@ -33,15 +32,13 @@ namespace Rebus.SimpleInjector
             if (TryGetInstance<IEnumerable<IHandleMessages<TMessage>>>(_container, out var handlerInstances))
             {
                 var handlerList = handlerInstances.ToList();
-
-                transactionContext.OnDisposed(() =>
+                transactionContext.OnDisposed(context => 
                 {
-                    handlerList
-                        .OfType<IDisposable>()
-                        .ForEach(disposable =>
-                        {
-                            disposable.Dispose();
-                        });
+                    var disposableHandlers = handlerList.OfType<IDisposable>();
+                    foreach (var disposable in disposableHandlers)
+                    {
+                        disposable.Dispose();
+                    }
                 });
 
                 return handlerList;
