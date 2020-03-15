@@ -31,32 +31,37 @@ namespace Rebus.SimpleInjector.Tests
                 throw new NotImplementedException();
             }
 
-            public Task SendLocal(object commandMessage, Dictionary<string, string> optionalHeaders = null)
-            {
-                throw new NotImplementedException();
-            }
-
-            public Task Send(object commandMessage, Dictionary<string, string> optionalHeaders = null)
-            {
-                throw new NotImplementedException();
-            }
-
-            public Task DeferLocal(TimeSpan delay, object message, Dictionary<string, string> optionalHeaders = null)
-            {
-                throw new NotImplementedException();
-            }
-
-            public Task Reply(object replyMessage, Dictionary<string, string> optionalHeaders = null)
-            {
-                throw new NotImplementedException();
-            }
-
-            public Task Defer(TimeSpan delay, object message, Dictionary<string, string> optionalHeaders = null)
+            public Task Publish(object eventMessage, IDictionary<string, string> optionalHeaders = null)
             {
                 throw new NotImplementedException();
             }
 
             public IAdvancedApi Advanced { get; }
+
+            public Task SendLocal(object commandMessage, IDictionary<string, string> optionalHeaders = null)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task Send(object commandMessage, IDictionary<string, string> optionalHeaders = null)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task DeferLocal(TimeSpan delay, object message, IDictionary<string, string> optionalHeaders = null)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task Defer(TimeSpan delay, object message, IDictionary<string, string> optionalHeaders = null)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task Reply(object replyMessage, IDictionary<string, string> optionalHeaders = null)
+            {
+                throw new NotImplementedException();
+            }
 
             public Task Subscribe<TEvent>()
             {
@@ -74,11 +79,6 @@ namespace Rebus.SimpleInjector.Tests
             }
 
             public Task Unsubscribe(Type eventType)
-            {
-                throw new NotImplementedException();
-            }
-
-            public Task Publish(object eventMessage, Dictionary<string, string> optionalHeaders = null)
             {
                 throw new NotImplementedException();
             }

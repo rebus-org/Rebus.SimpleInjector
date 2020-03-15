@@ -69,27 +69,27 @@ namespace Rebus.SimpleInjector
 
         class FakeSyncBus : ISyncBus
         {
-            public void SendLocal(object commandMessage, Dictionary<string, string> optionalHeaders = null)
+            public void SendLocal(object commandMessage, IDictionary<string, string> optionalHeaders = null)
             {
                 throw new NotImplementedException();
             }
 
-            public void Send(object commandMessage, Dictionary<string, string> optionalHeaders = null)
+            public void Send(object commandMessage, IDictionary<string, string> optionalHeaders = null)
             {
                 throw new NotImplementedException();
             }
 
-            public void Reply(object replyMessage, Dictionary<string, string> optionalHeaders = null)
+            public void Reply(object replyMessage, IDictionary<string, string> optionalHeaders = null)
             {
                 throw new NotImplementedException();
             }
 
-            public void Defer(TimeSpan delay, object message, Dictionary<string, string> optionalHeaders = null)
+            public void Defer(TimeSpan delay, object message, IDictionary<string, string> optionalHeaders = null)
             {
                 throw new NotImplementedException();
             }
 
-            public void DeferLocal(TimeSpan delay, object message, Dictionary<string, string> optionalHeaders = null)
+            public void DeferLocal(TimeSpan delay, object message, IDictionary<string, string> optionalHeaders = null)
             {
                 throw new NotImplementedException();
             }
@@ -114,7 +114,7 @@ namespace Rebus.SimpleInjector
                 throw new NotImplementedException();
             }
 
-            public void Publish(object eventMessage, Dictionary<string, string> optionalHeaders = null)
+            public void Publish(object eventMessage, IDictionary<string, string> optionalHeaders = null)
             {
                 throw new NotImplementedException();
             }
