@@ -5,7 +5,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rebus.SimpleInjector.Tests</RootNamespace>
     <AssemblyName>Rebus.SimpleInjector.Tests</AssemblyName>
-    <TargetFrameworks>net45;netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net45;netcoreapp2.1</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Authors>mookid8000</Authors>
     <PackageLicenseUrl>https://raw.githubusercontent.com/rebus-org/Rebus/master/LICENSE.md</PackageLicenseUrl>
@@ -45,6 +45,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rebus.SimpleInjector\Rebus.SimpleInjector.csproj" />
+    <PackageReference Include="microsoft.net.test.sdk" Version="16.5.0" />
     <PackageReference Include="nunit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1">
       <PrivateAssets>all</PrivateAssets>
