@@ -28,4 +28,9 @@
 * Change configuration API to work better with SimpleInjector
 * Target .NET Core 2.0 too
 
+## 6.0.0
+
+* Update to Rebus 6 - thanks [GrzegorzBlok]
+
+[GrzegorzBlok]: https://github.com/GrzegorzBlok
 [trevorreeves]: https://github.com/trevorreeves
