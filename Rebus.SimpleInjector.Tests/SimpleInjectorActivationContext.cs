@@ -73,7 +73,7 @@ namespace Rebus.SimpleInjector.Tests
 
                     Console.WriteLine("Registering {0} => {1}", serviceType, string.Join(", ", a));
 
-                    container.RegisterCollection(serviceType, a.Select(g => g.ConcreteType));
+                    container.Collection.Register(serviceType, a.Select(g => g.ConcreteType));
                 }
             }
 
