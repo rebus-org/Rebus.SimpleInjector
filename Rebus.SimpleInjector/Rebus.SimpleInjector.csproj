@@ -52,7 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Rebus" Version="6.0.0" />
-    <PackageReference Include="simpleinjector" Version="4.0.8" />
+    <PackageReference Include="simpleinjector" Version="5.0.2" />
   </ItemGroup>
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="$(ProjectDir)..\scripts\patch_assemblyinfo.cmd $(ProjectDir)" />
