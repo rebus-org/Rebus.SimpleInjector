@@ -5,7 +5,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rebus.SimpleInjector.Tests</RootNamespace>
     <AssemblyName>Rebus.SimpleInjector.Tests</AssemblyName>
-    <TargetFrameworks>net45;netcoreapp2.1</TargetFrameworks>
+    <TargetFrameworks>net462;netcoreapp3.1</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Authors>mookid8000</Authors>
     <PackageLicenseUrl>https://raw.githubusercontent.com/rebus-org/Rebus/master/LICENSE.md</PackageLicenseUrl>
@@ -34,15 +34,6 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net45' ">
-    <DefineConstants>NET45</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <DefineConstants>NETSTANDARD2_0</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
-    <DefineConstants>NETSTANDARD2_1</DefineConstants>
-  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rebus.SimpleInjector\Rebus.SimpleInjector.csproj" />
     <PackageReference Include="microsoft.net.test.sdk" Version="16.5.0" />
@@ -55,8 +46,5 @@
     <PackageReference Include="Rebus.Tests.Contracts" Version="6.0.0" />
     <PackageReference Include="simpleinjector" Version="5.0.2" />
     <PackageReference Include="SimpleInjector.Packaging" Version="5.0.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
 </Project>

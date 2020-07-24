@@ -17,7 +17,14 @@ namespace Rebus.SimpleInjector.Tests
             var registry = new HandlerRegistry();
             configureHandlers(registry);
 
-            var simpleInjContainer = new Container { Options = { DefaultScopedLifestyle = ScopedLifestyle.Flowing } };
+            var simpleInjContainer = new Container
+            {
+                Options =
+                {
+                    DefaultScopedLifestyle = ScopedLifestyle.Flowing,
+                    EnableAutoVerification = false //< disable verification for tests to avoid tricking instance counters in contract tests
+                }
+            };
             registry.ApplyRegistrations(simpleInjContainer);
 
             container = new ActivatedContainer(simpleInjContainer);
@@ -30,7 +37,14 @@ namespace Rebus.SimpleInjector.Tests
             var registry = new HandlerRegistry();
             configureHandlers(registry);
 
-            var simpleInjContainer = new Container { Options = { DefaultScopedLifestyle = ScopedLifestyle.Flowing } };
+            var simpleInjContainer = new Container
+            {
+                Options =
+                {
+                    DefaultScopedLifestyle = ScopedLifestyle.Flowing,
+                    EnableAutoVerification = false //< disable verification for tests to avoid tricking instance counters in contract tests
+                }
+            };
 
             registry.ApplyRegistrations(simpleInjContainer);
 
@@ -57,6 +71,7 @@ namespace Rebus.SimpleInjector.Tests
 
             public void ApplyRegistrations(Container container)
             {
+                // SimpleInjector's registration syntax is backwards, so we need to do it like this:
                 var handlersToRegister = HandlerTypesToRegister
                     .SelectMany(type => GetHandlerInterfaces(type)
                         .Select(handlerType =>
@@ -67,13 +82,14 @@ namespace Rebus.SimpleInjector.Tests
                             }))
                     .GroupBy(a => a.HandlerType);
 
-                foreach (var a in handlersToRegister)
+                foreach (var registration in handlersToRegister)
                 {
-                    var serviceType = a.Key;
+                    var serviceType = registration.Key;
+                    var concreteTypes = registration.Select(g => g.ConcreteType).ToList();
 
-                    Console.WriteLine("Registering {0} => {1}", serviceType, string.Join(", ", a));
+                    Console.WriteLine("Registering {0} => {1}", serviceType, string.Join(", ", concreteTypes));
 
-                    container.Collection.Register(serviceType, a.Select(g => g.ConcreteType), Lifestyle.Scoped);
+                    container.Collection.Register(serviceType, concreteTypes, Lifestyle.Scoped);
                 }
             }
 

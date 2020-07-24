@@ -4,6 +4,7 @@ using System.Linq;
 using Rebus.Bus;
 using Rebus.Bus.Advanced;
 using Rebus.Config;
+using Rebus.Handlers;
 using Rebus.Messages;
 using Rebus.Pipeline;
 using Rebus.Transport;
@@ -16,6 +17,41 @@ namespace Rebus.SimpleInjector
     /// </summary>
     public static class SimpleInjectorConfigurationExtensions
     {
+        /// <summary>
+        /// Registers <typeparamref name="THandler"/> as a handler of messages of type <typeparamref name="TMessage"/>
+        /// </summary>
+        public static void RegisterHandlers<TMessage, THandler>(this Container container)
+            where THandler : IHandleMessages<TMessage>
+        {
+            RegisterHandlers(container, typeof(IHandleMessages<TMessage>), new[] { typeof(THandler) });
+        }
+
+        /// <summary>
+        /// Registers <typeparamref name="THandler1"/> and <typeparamref name="THandler2"/> as handlers of messages of type <typeparamref name="TMessage"/>
+        /// </summary>
+        public static void RegisterHandlers<TMessage, THandler1, THandler2>(this Container container)
+            where THandler1 : IHandleMessages<TMessage>
+            where THandler2 : IHandleMessages<TMessage>
+        {
+            RegisterHandlers(container, typeof(IHandleMessages<TMessage>), new[] { typeof(THandler1), typeof(THandler2) });
+        }
+
+        /// <summary>
+        /// Registers <typeparamref name="THandler1"/> and <typeparamref name="THandler2"/> and <typeparamref name="THandler3"/> as handlers of messages of type <typeparamref name="TMessage"/>
+        /// </summary>
+        public static void RegisterHandlers<TMessage, THandler1, THandler2, THandler3>(this Container container)
+            where THandler1 : IHandleMessages<TMessage>
+            where THandler2 : IHandleMessages<TMessage>
+            where THandler3 : IHandleMessages<TMessage>
+        {
+            RegisterHandlers(container, typeof(IHandleMessages<TMessage>), new[] { typeof(THandler1), typeof(THandler2), typeof(THandler3) });
+        }
+
+        static void RegisterHandlers(Container container, Type messageHandlerType, IEnumerable<Type> concreteHandlerTypes)
+        {
+            container.Collection.Register(messageHandlerType, concreteHandlerTypes, Lifestyle.Scoped);
+        }
+
         /// <summary>
         /// Makes the necessary registrations in the container, registering the passed-in <paramref name="configurationCallback"/>
         /// as a configuration callback. The callback is invoked with a <see cref="RebusConfigurer"/> which must have
