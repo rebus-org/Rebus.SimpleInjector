@@ -17,7 +17,7 @@ namespace Rebus.SimpleInjector.Tests
             var registry = new HandlerRegistry();
             configureHandlers(registry);
 
-            var simpleInjContainer = new Container();
+            var simpleInjContainer = new Container { Options = { DefaultScopedLifestyle = ScopedLifestyle.Flowing } };
             registry.ApplyRegistrations(simpleInjContainer);
 
             container = new ActivatedContainer(simpleInjContainer);
@@ -30,7 +30,7 @@ namespace Rebus.SimpleInjector.Tests
             var registry = new HandlerRegistry();
             configureHandlers(registry);
 
-            var simpleInjContainer = new Container();
+            var simpleInjContainer = new Container { Options = { DefaultScopedLifestyle = ScopedLifestyle.Flowing } };
 
             registry.ApplyRegistrations(simpleInjContainer);
 
@@ -73,7 +73,7 @@ namespace Rebus.SimpleInjector.Tests
 
                     Console.WriteLine("Registering {0} => {1}", serviceType, string.Join(", ", a));
 
-                    container.Collection.Register(serviceType, a.Select(g => g.ConcreteType));
+                    container.Collection.Register(serviceType, a.Select(g => g.ConcreteType), Lifestyle.Scoped);
                 }
             }
 

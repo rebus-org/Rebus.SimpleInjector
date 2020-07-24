@@ -15,7 +15,7 @@ namespace Rebus.SimpleInjector.Tests
         [Test]
         public void SimpleInjectorDoesNotThrow()
         {
-            var container = new Container();
+            var container = new Container { Options = { DefaultScopedLifestyle = ScopedLifestyle.Flowing } };
 
             Using(container);
 

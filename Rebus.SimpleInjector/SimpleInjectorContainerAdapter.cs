@@ -7,6 +7,8 @@ using Rebus.Bus;
 using Rebus.Handlers;
 using Rebus.Transport;
 using SimpleInjector;
+using SimpleInjector.Lifestyles;
+
 // ReSharper disable ArgumentsStyleLiteral
 #pragma warning disable 1998
 
@@ -29,28 +31,21 @@ namespace Rebus.SimpleInjector
         /// </summary>
         public async Task<IEnumerable<IHandleMessages<TMessage>>> GetHandlers<TMessage>(TMessage message, ITransactionContext transactionContext)
         {
-            if (TryGetInstance<IEnumerable<IHandleMessages<TMessage>>>(_container, out var handlerInstances))
+            var scope = transactionContext.GetOrAdd("current-simpleinjector-scope", () =>
             {
-                var handlerList = handlerInstances.ToList();
-                transactionContext.OnDisposed(context => 
-                {
-                    var disposableHandlers = handlerList.OfType<IDisposable>();
-                    foreach (var disposable in disposableHandlers)
-                    {
-                        disposable.Dispose();
-                    }
-                });
+                var newScope = AsyncScopedLifestyle.BeginScope(_container);
+                transactionContext.OnDisposed(ctx => newScope.Dispose());
+                return newScope;
+            });
 
-                return handlerList;
-            }
-
-            return new IHandleMessages<TMessage>[0];
+            return TryGetInstance<IEnumerable<IHandleMessages<TMessage>>>(scope, out var handlerInstances)
+                ? (IEnumerable<IHandleMessages<TMessage>>) handlerInstances.ToList()
+                : new IHandleMessages<TMessage>[0];
         }
 
-        static bool TryGetInstance<TService>(Container container, out TService instance)
+        static bool TryGetInstance<TService>(IServiceProvider provider, out TService instance)
             where TService : class
         {
-            IServiceProvider provider = container;
             instance = (TService)provider.GetService(typeof(TService));
             return instance != null;
         }

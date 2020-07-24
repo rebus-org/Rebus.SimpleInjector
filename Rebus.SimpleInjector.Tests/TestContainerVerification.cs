@@ -17,7 +17,7 @@ namespace Rebus.SimpleInjector.Tests
         [Description("Verifies that auto-registered Rebus components (like IMessageContext, maybe other?) can be resolved as part of SimpleInjector's verification process")]
         public void CanVerifyContainer()
         {
-            var container = new Container();
+            var container = new Container { Options = { DefaultScopedLifestyle = ScopedLifestyle.Flowing } };
             var adapter = new SimpleInjectorContainerAdapter(container);
             adapter.SetBus(new FakeBus());
 
