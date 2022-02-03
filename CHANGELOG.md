@@ -29,6 +29,9 @@
 * Update to SimpleInjector 5 - thanks [Eshva]
 * Use scopes to implement proper disposal of handlers (means that you need to remember to enable scopes in the container, e.g. by setting `Options = { DefaultScopedLifestyle = ScopedLifestyle.Flowing }`)
 
+## 8.0.0
+* Make registration API more consistent with other modern containers
+
 
 [Eshva]: https://github.com/Eshva
 [GrzegorzBlok]: https://github.com/GrzegorzBlok

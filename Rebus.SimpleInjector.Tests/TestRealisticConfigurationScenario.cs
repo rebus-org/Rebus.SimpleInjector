@@ -37,10 +37,9 @@ public class RebusPackage : IPackage
     {
         Console.WriteLine("Calling RebusPackage");
 
-        container.ConfigureRebus(
+        container.RegisterRebus(
             configurer => configurer
                 .Transport(t => t.UseInMemoryTransport(new InMemNetwork(), "test"))
-                .Start()
         );
 
     }

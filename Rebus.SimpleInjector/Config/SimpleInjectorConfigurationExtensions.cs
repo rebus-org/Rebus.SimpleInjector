@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Rebus.Bus;
 using Rebus.Bus.Advanced;
 using Rebus.Handlers;
-using Rebus.Messages;
+using Rebus.Internals;
+using Rebus.Internals.Fakes;
 using Rebus.Pipeline;
 using Rebus.SimpleInjector;
-using Rebus.Transport;
 using SimpleInjector;
 
 namespace Rebus.Config;
@@ -59,7 +60,7 @@ public static class SimpleInjectorConfigurationExtensions
     /// The configuration callback is called the first time the bus is resolved, which may be done manually or simply by calling
     /// <see cref="StartBus"/>
     /// </summary>
-    public static void ConfigureRebus(this Container container, Func<RebusConfigurer, IBus> configurationCallback)
+    public static void RegisterRebus(this Container container, Func<RebusConfigurer, RebusConfigurer> configurationCallback, bool startAutomatically = true)
     {
         if (container.GetCurrentRegistrations().Any(r => r.ServiceType == typeof(IBus)))
         {
@@ -75,6 +76,8 @@ public static class SimpleInjectorConfigurationExtensions
 
         container.Register(() =>
         {
+            if (container.IsVerifying) return new FakeMessageContext();
+
             var currentMessageContext = MessageContext.Current;
 
             if (currentMessageContext != null)
@@ -82,89 +85,30 @@ public static class SimpleInjectorConfigurationExtensions
                 return currentMessageContext;
             }
 
-            if (container.IsVerifying)
-            {
-                return new FakeMessageContext();
-            }
-
             throw new InvalidOperationException("Attempted to inject the current message context from MessageContext.Current, but it was null! Did you attempt to resolve IMessageContext from outside of a Rebus message handler?");
         });
 
-        container.Register(() =>
+        container.Register<IBusStarter>(() =>
         {
-            var containerAdapter = new SimpleInjectorContainerAdapter(container);
-            var rebusConfigurer = Configure.With(containerAdapter);
-            return configurationCallback(rebusConfigurer);
+            var rebusConfigurer = Configure.With(new SimpleInjectorContainerAdapter(container));
+            var busStarter = configurationCallback(rebusConfigurer).Create();
+            return new SimpleInjectorBusStarterDecorator(busStarter);
         }, Lifestyle.Singleton);
+
+        container.Register(() => container.GetInstance<IBusStarter>().Bus, Lifestyle.Singleton);
+
+        container.Options.ContainerLocking += (_, _) =>
+        {
+            var starter = container.GetInstance<IBusStarter>();
+            
+            if (!startAutomatically) return;
+
+            starter.Start();
+        };
     }
 
     /// <summary>
-    /// After having configured the bus with <see cref="ConfigureRebus"/> the bus may be started by calling this method
+    /// After having configured the bus with <see cref="RegisterRebus"/> the bus may be started by calling this method
     /// </summary>
-    public static void StartBus(this Container container) => container.GetInstance<IBus>();
-
-    class FakeSyncBus : ISyncBus
-    {
-        public void SendLocal(object commandMessage, IDictionary<string, string> optionalHeaders = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Send(object commandMessage, IDictionary<string, string> optionalHeaders = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Reply(object replyMessage, IDictionary<string, string> optionalHeaders = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Defer(TimeSpan delay, object message, IDictionary<string, string> optionalHeaders = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void DeferLocal(TimeSpan delay, object message, IDictionary<string, string> optionalHeaders = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Subscribe<TEvent>()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Subscribe(Type eventType)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Unsubscribe<TEvent>()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Unsubscribe(Type eventType)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Publish(object eventMessage, IDictionary<string, string> optionalHeaders = null)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    /// <summary>
-    /// Fake implementation of <see cref="IMessageContext"/> that can be returned by SimpleInjector while verifying the configuration
-    /// </summary>
-    class FakeMessageContext : IMessageContext
-    {
-        public ITransactionContext TransactionContext { get; }
-        public IncomingStepContext IncomingStepContext { get; }
-        public TransportMessage TransportMessage { get; }
-        public Message Message { get; }
-        public Dictionary<string, string> Headers { get; }
-    }
+    public static void StartBus(this Container container) => container.GetInstance<IBusStarter>().Start();
 }

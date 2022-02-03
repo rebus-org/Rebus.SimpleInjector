@@ -51,7 +51,7 @@ public class SimpleInjectorActivationContext : IActivationContext
         container = new ActivatedContainer(simpleInjContainer);
 
         //return configureBus(Configure.With(new SimpleInjectorContainerAdapter(simpleInjContainer))).Start();
-        simpleInjContainer.ConfigureRebus(configurer => configureBus(configurer).Start());
+        simpleInjContainer.RegisterRebus(configureBus);
 
         simpleInjContainer.StartBus();
 

@@ -25,9 +25,9 @@ public class TestDoesNotDoubleResolveBecauseOfLazyEnumerableEvaluation : Fixture
 
         container.RegisterInstance(gotTheString);
 
-        container.ConfigureRebus(configure => configure
-            .Transport(t => t.UseInMemoryTransport(new InMemNetwork(), "whatever-man"))
-            .Start()
+        container.RegisterRebus(
+            configure => configure
+                .Transport(t => t.UseInMemoryTransport(new InMemNetwork(), "whatever-man"))
         );
 
         container.RegisterHandlers<string, MyMessageHandler>();
