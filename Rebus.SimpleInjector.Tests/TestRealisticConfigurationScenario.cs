@@ -2,56 +2,56 @@
 using System.Reflection;
 using System.Threading;
 using NUnit.Framework;
+using Rebus.Config;
 using Rebus.Tests.Contracts;
 using Rebus.Transport.InMem;
 using SimpleInjector;
 using SimpleInjector.Packaging;
 
-namespace Rebus.SimpleInjector.Tests
+namespace Rebus.SimpleInjector.Tests;
+
+[TestFixture]
+public class TestRealisticConfigurationScenario : FixtureBase
 {
-    [TestFixture]
-    public class TestRealisticConfigurationScenario : FixtureBase
+    [Test]
+    public void SimpleInjectorDoesNotThrow()
     {
-        [Test]
-        public void SimpleInjectorDoesNotThrow()
+        var container = new Container { Options = { DefaultScopedLifestyle = ScopedLifestyle.Flowing } };
+
+        Using(container);
+
+        container.RegisterPackages(new[]
         {
-            var container = new Container { Options = { DefaultScopedLifestyle = ScopedLifestyle.Flowing } };
+            typeof(TestRealisticConfigurationScenario).GetTypeInfo().Assembly,
+        });
 
-            Using(container);
+        container.StartBus();
 
-            container.RegisterPackages(new[]
-            {
-                typeof(TestRealisticConfigurationScenario).GetTypeInfo().Assembly,
-            });
-
-            container.StartBus();
-
-            Thread.Sleep(1000);
-        }
+        Thread.Sleep(1000);
     }
+}
 
-    public class RebusPackage : IPackage
+public class RebusPackage : IPackage
+{
+    public void RegisterServices(Container container)
     {
-        public void RegisterServices(Container container)
-        {
-            Console.WriteLine("Calling RebusPackage");
+        Console.WriteLine("Calling RebusPackage");
 
-            container.ConfigureRebus(
-                configurer => configurer
-                    .Transport(t => t.UseInMemoryTransport(new InMemNetwork(), "test"))
-                    .Start()
-            );
+        container.ConfigureRebus(
+            configurer => configurer
+                .Transport(t => t.UseInMemoryTransport(new InMemNetwork(), "test"))
+                .Start()
+        );
 
-        }
     }
+}
 
-    public class AnotherPackage : IPackage
+public class AnotherPackage : IPackage
+{
+    public void RegisterServices(Container container)
     {
-        public void RegisterServices(Container container)
-        {
-            Console.WriteLine("Calling AnotherPackage");
+        Console.WriteLine("Calling AnotherPackage");
 
-            container.Register<Func<string>>(() => () => "HEJ MED DIG");
-        }
+        container.Register<Func<string>>(() => () => "HEJ MED DIG");
     }
 }
