@@ -11,10 +11,9 @@ Provides a SimpleInjector-based container adapter for [Rebus](https://github.com
 To configure Rebus to work with your SimpleInjector container, simply call
 
 ```csharp
-container.ConfigureRebus(
+container.RegisterRebus(
     configurer => configurer
         .(...)
-        .Start()
 );
 ```
 
@@ -23,12 +22,11 @@ where the `(...)` is the part usually omitted from the Rebus configuration examp
 A slightly more realistic example (using Serilog, RabbitMQ and SQL Server) could look like this:
 
 ```csharp
-container.ConfigureRebus(
+container.RegisterRebus(
 	configurer => configurer
 		.Logging(l => l.Serilog())
 		.Transport(t => t.UseRabbitMq("amqp://rebususer:blablasecret@BIGRABBIT01.local", "simpleinjectortest"))
 		.Sagas(s => s.StoreInSqlServer("server=SQLMOTEL01.local; database=RebusStuff; trusted_connection=true"))
-		.Start()
 );
 ```
 
