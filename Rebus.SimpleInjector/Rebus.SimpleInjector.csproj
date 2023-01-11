@@ -8,12 +8,18 @@
 		<PackageProjectUrl>https://rebus.fm/what-is-rebus/</PackageProjectUrl>
 		<PackageDescription>Provides a SimpleInjector container adapter for Rebus</PackageDescription>
 		<Copyright>Copyright Rebus FM ApS 2012</Copyright>
-		<PackageTags>rebus autofac ioc dependency-injection</PackageTags>
-		<PackageIconUrl>https://github.com/mookid8000/Rebus/raw/master/artwork/little_rebusbus2_copy-200x200.png</PackageIconUrl>
+		<PackageTags>rebus simple-injector simpleinjector ioc dependency-injection</PackageTags>
 		<RepositoryUrl>https://github.com/rebus-org/Rebus</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageIcon>little_rebusbus2_copy-500x500.png</PackageIcon>
 	</PropertyGroup>
+	<ItemGroup>
+	  <None Include="..\artwork\little_rebusbus2_copy-500x500.png">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Rebus" Version="6.0.0" />
 		<PackageReference Include="simpleinjector" Version="5.0.2" />
