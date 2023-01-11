@@ -32,6 +32,9 @@
 ## 8.0.0
 * Make registration API more consistent with other modern containers
 
+## 8.0.1
+* Change order of actions in `ContainerLocking` callback, making it possible to avoid getting an error in cases where the callback is used to make additional registrations on the container
+
 
 [Eshva]: https://github.com/Eshva
 [GrzegorzBlok]: https://github.com/GrzegorzBlok

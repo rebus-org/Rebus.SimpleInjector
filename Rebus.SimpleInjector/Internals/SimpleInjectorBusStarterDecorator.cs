@@ -11,7 +11,7 @@ class SimpleInjectorBusStarterDecorator : IBusStarter
     readonly IBusStarter _busStarter;
     readonly object _lock = new();
 
-    bool _started;
+    volatile bool _started;
 
     public SimpleInjectorBusStarterDecorator(IBusStarter busStarter) => _busStarter = busStarter;
 

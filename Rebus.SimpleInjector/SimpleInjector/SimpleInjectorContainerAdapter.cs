@@ -34,13 +34,13 @@ class SimpleInjectorContainerAdapter : IContainerAdapter
         var scope = transactionContext.GetOrAdd("current-simpleinjector-scope", () =>
         {
             var newScope = AsyncScopedLifestyle.BeginScope(_container);
-            transactionContext.OnDisposed(ctx => newScope.Dispose());
+            transactionContext.OnDisposed(_ => newScope.Dispose());
             return newScope;
         });
 
         return TryGetInstance<IEnumerable<IHandleMessages<TMessage>>>(scope, out var handlerInstances)
-            ? (IEnumerable<IHandleMessages<TMessage>>) handlerInstances.ToList()
-            : new IHandleMessages<TMessage>[0];
+            ? handlerInstances.ToList()
+            : Array.Empty<IHandleMessages<TMessage>>();
     }
 
     static bool TryGetInstance<TService>(IServiceProvider provider, out TService instance)

@@ -15,4 +15,7 @@
 		<PackageReference Include="simpleinjector" Version="5.0.2" />
 		<PackageReference Include="SimpleInjector.Packaging" Version="5.0.0" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Bug\" />
+	</ItemGroup>
 </Project>

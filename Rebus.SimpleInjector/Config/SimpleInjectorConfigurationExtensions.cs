@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Rebus.Bus;
-using Rebus.Bus.Advanced;
 using Rebus.Handlers;
 using Rebus.Internals;
 using Rebus.Internals.Fakes;
@@ -99,11 +97,10 @@ public static class SimpleInjectorConfigurationExtensions
 
         container.Options.ContainerLocking += (_, _) =>
         {
-            var starter = container.GetInstance<IBusStarter>();
-            
             if (!startAutomatically) return;
 
-            starter.Start();
+            // call GetInstance AFTER the check, so we avoid resolving anything if automatic start was disabled
+            container.GetInstance<IBusStarter>().Start();
         };
     }
 
