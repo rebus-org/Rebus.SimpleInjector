@@ -22,6 +22,7 @@ public static class SimpleInjectorConfigurationExtensions
     public static void RegisterHandlers<TMessage, THandler>(this Container container)
         where THandler : IHandleMessages<TMessage>
     {
+        if (container == null) throw new ArgumentNullException(nameof(container));
         RegisterHandlers(container, typeof(IHandleMessages<TMessage>), new[] { typeof(THandler) });
     }
 
@@ -32,6 +33,7 @@ public static class SimpleInjectorConfigurationExtensions
         where THandler1 : IHandleMessages<TMessage>
         where THandler2 : IHandleMessages<TMessage>
     {
+        if (container == null) throw new ArgumentNullException(nameof(container));
         RegisterHandlers(container, typeof(IHandleMessages<TMessage>), new[] { typeof(THandler1), typeof(THandler2) });
     }
 
@@ -43,11 +45,13 @@ public static class SimpleInjectorConfigurationExtensions
         where THandler2 : IHandleMessages<TMessage>
         where THandler3 : IHandleMessages<TMessage>
     {
+        if (container == null) throw new ArgumentNullException(nameof(container));
         RegisterHandlers(container, typeof(IHandleMessages<TMessage>), new[] { typeof(THandler1), typeof(THandler2), typeof(THandler3) });
     }
 
     static void RegisterHandlers(Container container, Type messageHandlerType, IEnumerable<Type> concreteHandlerTypes)
     {
+        if (concreteHandlerTypes == null) throw new ArgumentNullException(nameof(concreteHandlerTypes));
         container.Collection.Register(messageHandlerType, concreteHandlerTypes, Lifestyle.Scoped);
     }
 
@@ -60,6 +64,9 @@ public static class SimpleInjectorConfigurationExtensions
     /// </summary>
     public static void RegisterRebus(this Container container, Func<RebusConfigurer, RebusConfigurer> configurationCallback, bool startAutomatically = true)
     {
+        if (container == null) throw new ArgumentNullException(nameof(container));
+        if (configurationCallback == null) throw new ArgumentNullException(nameof(configurationCallback));
+
         if (container.GetCurrentRegistrations().Any(r => r.ServiceType == typeof(IBus)))
         {
             throw new InvalidOperationException("Cannot register IBus in the container because it has already been registered. If you want to host multiple Rebus instances in a single process, please use separate container instances for them.");
@@ -107,5 +114,9 @@ public static class SimpleInjectorConfigurationExtensions
     /// <summary>
     /// After having configured the bus with <see cref="RegisterRebus"/> the bus may be started by calling this method
     /// </summary>
-    public static void StartBus(this Container container) => container.GetInstance<IBusStarter>().Start();
+    public static void StartBus(this Container container)
+    {
+        if (container == null) throw new ArgumentNullException(nameof(container));
+        container.GetInstance<IBusStarter>().Start();
+    }
 }

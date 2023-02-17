@@ -1,5 +1,7 @@
-﻿using NUnit.Framework;
+﻿using System.Threading.Tasks;
+using NUnit.Framework;
 using Rebus.Config;
+using Rebus.Handlers;
 using Rebus.Logging;
 using Rebus.Transport.InMem;
 using SimpleInjector;
@@ -20,6 +22,16 @@ public class CheckRegistrationApi
                 .Transport(t => t.UseInMemoryTransport(new InMemNetwork(), "whatever"))
         );
 
+        container.Collection.Register<IHandleMessages<string>>(typeof(MyStringHandler));
+
         container.Verify();
+    }
+
+    class MyStringHandler : IHandleMessages<string>
+    {
+        public Task Handle(string message)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
