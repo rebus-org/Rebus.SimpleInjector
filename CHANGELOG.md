@@ -35,7 +35,7 @@
 ## 8.0.1
 * Change order of actions in `ContainerLocking` callback, making it possible to avoid getting an error in cases where the callback is used to make additional registrations on the container
 
-## 9.0.0-alpha01
+## 9.0.0
 * Update to Rebus 8
 
 
